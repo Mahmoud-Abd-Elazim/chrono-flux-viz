@@ -1,20 +1,16 @@
 import { useMemo, useState } from "react";
-import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Cell, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Section } from "@/components/site/Section";
 import { InsightCard } from "@/components/site/InsightCard";
-import { ROI_BY_TYPE, YEARS } from "@/data/energy";
-
-type YearKey = "avg" | (typeof YEARS)[number];
+import { YearFilter } from "@/components/site/YearFilter";
+import { ROI_BY_YEAR, type Year } from "@/data/energy";
 
 export const RoiSection = () => {
-  const [year, setYear] = useState<YearKey>(2025);
+  const [year, setYear] = useState<number | "all">(2024);
 
   const data = useMemo(() => {
-    const rows = Object.entries(ROI_BY_TYPE).map(([name, arr]) => {
-      const value = year === "avg" ? arr.reduce((a, b) => a + b, 0) / arr.length : arr[YEARS.indexOf(year as any)];
-      return { name, value: Number(value.toFixed(2)) };
-    });
-    return rows.sort((a, b) => b.value - a.value);
+    const y = (year === "all" ? 2024 : year) as Year;
+    return [...ROI_BY_YEAR[y]].sort((a, b) => b.value - a.value);
   }, [year]);
 
   const top = data[0]?.name;
@@ -27,23 +23,7 @@ export const RoiSection = () => {
       subtitle="Annualized ROI (%). Filter by year to compare cycles."
     >
       <div className="flex flex-wrap items-center gap-3 mb-6">
-        <span className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Year</span>
-        <div className="relative">
-          <select
-            value={String(year)}
-            onChange={(e) => {
-              const v = e.target.value;
-              setYear(v === "avg" ? "avg" : (Number(v) as YearKey));
-            }}
-            className="appearance-none bg-secondary border border-border rounded-lg pl-4 pr-10 py-2 text-sm font-mono-num focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan"
-          >
-            {YEARS.map((y) => (
-              <option key={y} value={y}>{y}</option>
-            ))}
-            <option value="avg">All-years average</option>
-          </select>
-          <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">▾</div>
-        </div>
+        <YearFilter value={year} onChange={setYear} allowAll={false} />
         {top && (
           <div className="ml-auto inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-neon-magenta/50 bg-neon-magenta/10 text-xs">
             <span className="w-1.5 h-1.5 rounded-full bg-neon-magenta animate-pulse-glow" />
@@ -52,12 +32,18 @@ export const RoiSection = () => {
         )}
       </div>
 
-      <div className="surface-card rounded-2xl p-4 md:p-6 h-[480px]">
+      {year === 2025 && (
+        <div className="mb-4 px-4 py-2 rounded-lg border border-neon-amber/40 bg-neon-amber/5 text-xs text-neon-amber">
+          2025: only Primary Energy reported a return (0.74%). All other types posted 0%.
+        </div>
+      )}
+
+      <div className="surface-card rounded-2xl p-4 md:p-6 h-[520px]">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} layout="vertical" margin={{ top: 8, right: 32, left: 16, bottom: 8 }}>
+          <BarChart data={data} layout="vertical" margin={{ top: 8, right: 60, left: 24, bottom: 8 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
-            <XAxis type="number" stroke="hsl(var(--muted-foreground))" tick={{ fontSize: 11 }} />
-            <YAxis type="category" dataKey="name" stroke="hsl(var(--muted-foreground))" tick={{ fontSize: 12 }} width={90} />
+            <XAxis type="number" stroke="hsl(var(--muted-foreground))" tick={{ fontSize: 11 }} tickFormatter={(v) => `${v}%`} />
+            <YAxis type="category" dataKey="name" stroke="hsl(var(--muted-foreground))" tick={{ fontSize: 12 }} width={110} />
             <Tooltip
               cursor={{ fill: "hsl(var(--neon-cyan) / 0.05)" }}
               contentStyle={{
@@ -70,18 +56,21 @@ export const RoiSection = () => {
             />
             <Bar dataKey="value" radius={[0, 6, 6, 0]}>
               {data.map((d) => (
-                <Cell
-                  key={d.name}
-                  fill={d.name === top ? "hsl(var(--neon-magenta))" : "hsl(var(--neon-cyan))"}
-                />
+                <Cell key={d.name} fill={d.name === top ? "hsl(var(--neon-magenta))" : "hsl(var(--neon-cyan))"} />
               ))}
+              <LabelList
+                dataKey="value"
+                position="right"
+                formatter={(v: number) => `${v.toFixed(2)}%`}
+                style={{ fill: "hsl(var(--foreground))", fontSize: 11, fontWeight: 600 }}
+              />
             </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
 
       <InsightCard>
-        Oil and Gas dominate short-term returns, while renewables lag — but the gap is narrowing each year as solar and wind ROI climbs steadily.
+        Primary Energy and Oil consistently deliver the highest returns, while renewables (Solar, Wind) climb steadily year over year — narrowing the gap by 2024 before the broad 2025 collapse.
       </InsightCard>
     </Section>
   );

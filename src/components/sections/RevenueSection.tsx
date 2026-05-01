@@ -1,35 +1,50 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Section } from "@/components/site/Section";
 import { InsightCard } from "@/components/site/InsightCard";
-import { REVENUE_BY_TYPE } from "@/data/energy";
+import { YearFilter } from "@/components/site/YearFilter";
+import { REVENUE_BY_YEAR, type Year } from "@/data/energy";
 
-// Custom CSS grid treemap with neon styling.
 export const RevenueSection = () => {
-  const total = REVENUE_BY_TYPE.reduce((a, b) => a + b.value, 0);
-  const sorted = [...REVENUE_BY_TYPE].sort((a, b) => b.value - a.value);
+  const [year, setYear] = useState<number | "all">(2024);
   const [hover, setHover] = useState<string | null>(null);
+
+  const items = useMemo(() => {
+    const y = (year === "all" ? 2024 : year) as Year;
+    return [...REVENUE_BY_YEAR[y]].sort((a, b) => b.value - a.value);
+  }, [year]);
+
+  const total = items.reduce((a, b) => a + b.value, 0);
 
   return (
     <Section
       id="revenue"
       eyebrow="05 · Capital Concentration"
       title="Total Revenue by Energy Type"
-      subtitle="Cumulative revenue 2020–2025 ($B). Tile size encodes share of total."
+      subtitle="Tile size encodes share of total revenue for the selected year."
     >
+      <div className="mb-6">
+        <YearFilter value={year} onChange={setYear} allowAll={false} />
+      </div>
+
+      {year === 2025 && (
+        <div className="mb-4 px-4 py-2 rounded-lg border border-neon-amber/40 bg-neon-amber/5 text-xs text-neon-amber">
+          Only Electricity revenue available for 2025.
+        </div>
+      )}
+
       <div className="surface-card rounded-2xl p-4 md:p-6">
         <div
           className="grid gap-2"
           style={{
             gridTemplateColumns: "repeat(12, 1fr)",
-            gridAutoRows: "minmax(60px, auto)",
+            gridAutoRows: "minmax(70px, auto)",
             height: "min(70vh, 520px)",
           }}
         >
-          {sorted.map((d, i) => {
+          {items.map((d, i) => {
             const share = d.value / total;
-            // Span columns/rows roughly proportional to share, with a sensible floor.
-            const cols = Math.max(2, Math.round(share * 24));
-            const rows = i === 0 ? 4 : i === 1 ? 3 : i < 4 ? 2 : 1;
+            const cols = items.length === 1 ? 12 : Math.max(2, Math.round(share * 24));
+            const rows = items.length === 1 ? 7 : i === 0 ? 4 : i === 1 ? 3 : i < 4 ? 2 : 1;
             const isHover = hover === d.name;
             return (
               <div
@@ -56,7 +71,7 @@ export const RevenueSection = () => {
                     </div>
                   </div>
                   <div className="font-mono-num text-base md:text-2xl font-semibold text-foreground">
-                    ${d.value.toLocaleString()}B
+                    {d.value.toLocaleString()}
                   </div>
                 </div>
               </div>
@@ -66,7 +81,7 @@ export const RevenueSection = () => {
       </div>
 
       <InsightCard>
-        Fossil fuels still generate the majority of global revenue — Oil and Gas alone capture <span className="text-neon-magenta font-medium">~60%</span> of cumulative sector revenue.
+        Primary Energy, Oil and Electricity consistently capture the largest revenue share. By 2025 only Electricity is reported — at <span className="font-mono-num text-neon-cyan">25,841,117</span> — concentrating the entire market into a single category.
       </InsightCard>
     </Section>
   );
