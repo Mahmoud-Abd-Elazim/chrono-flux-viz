@@ -1,87 +1,96 @@
-import { CartesianGrid, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis, ReferenceLine } from "recharts";
+import { useMemo, useState } from "react";
+import { CartesianGrid, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis, LabelList } from "recharts";
 import { Section } from "@/components/site/Section";
 import { InsightCard } from "@/components/site/InsightCard";
-import { ENERGY_VS_GDP } from "@/data/energy";
-
-// Simple linear regression for trendline
-const xs = ENERGY_VS_GDP.map((d) => d.energy);
-const ys = ENERGY_VS_GDP.map((d) => d.gdp);
-const n = xs.length;
-const sx = xs.reduce((a, b) => a + b, 0);
-const sy = ys.reduce((a, b) => a + b, 0);
-const sxy = xs.reduce((a, b, i) => a + b * ys[i], 0);
-const sxx = xs.reduce((a, b) => a + b * b, 0);
-const slope = (n * sxy - sx * sy) / (n * sxx - sx * sx);
-const intercept = (sy - slope * sx) / n;
-const minX = Math.min(...xs), maxX = Math.max(...xs);
-const trend = [
-  { energy: minX, gdp: slope * minX + intercept },
-  { energy: maxX, gdp: slope * maxX + intercept },
-];
+import { YearFilter } from "@/components/site/YearFilter";
+import { ENERGY_VS_GDP_BY_YEAR, type Year } from "@/data/energy";
 
 export const EconomySection = () => {
+  const [year, setYear] = useState<number | "all">(2022);
+
+  const { data, gdpAvailable } = useMemo(() => {
+    const y = (year === "all" ? 2022 : year) as Year;
+    const rows = ENERGY_VS_GDP_BY_YEAR[y];
+    const hasGdp = rows.some((r) => r.gdp > 0);
+    return { data: rows, gdpAvailable: hasGdp };
+  }, [year]);
+
+  // X/Y depend on whether GDP is available
+  const xKey = gdpAvailable ? "gdp" : "revenue";
+  const yKey = "production";
+  const xLabel = gdpAvailable ? "Avg GDP ($B)" : "Total Revenue";
+  const yLabel = "Avg Production";
+
   return (
     <Section
       id="economy"
       eyebrow="09 · Economy vs Energy"
-      title="Energy Production vs GDP"
-      subtitle="Each point = country. Bubble size = population. Trendline shows the correlation."
+      title="Energy Production vs Economy by Continent"
+      subtitle="Each point = continent. Bubble size = total revenue. Filter by year."
     >
-      <div className="surface-card rounded-2xl p-4 md:p-6 h-[500px]">
+      <div className="flex flex-wrap items-center gap-3 mb-6">
+        <YearFilter value={year} onChange={setYear} allowAll={false} />
+        {!gdpAvailable && (
+          <span className="text-xs text-neon-amber">
+            GDP data unavailable for {String(year)} — showing Production vs Revenue
+          </span>
+        )}
+      </div>
+
+      <div className="surface-card rounded-2xl p-4 md:p-6 h-[520px]">
         <ResponsiveContainer width="100%" height="100%">
-          <ScatterChart margin={{ top: 16, right: 24, left: 8, bottom: 24 }}>
+          <ScatterChart margin={{ top: 16, right: 32, left: 24, bottom: 32 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
             <XAxis
               type="number"
-              dataKey="energy"
-              name="Energy (TWh)"
+              dataKey={xKey}
+              name={xLabel}
               stroke="hsl(var(--muted-foreground))"
               tick={{ fontSize: 11 }}
-              label={{ value: "Energy Production (TWh)", position: "insideBottom", offset: -10, fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+              tickFormatter={(v) => v.toLocaleString()}
+              label={{ value: xLabel, position: "insideBottom", offset: -16, fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
             />
             <YAxis
               type="number"
-              dataKey="gdp"
-              name="GDP ($B)"
+              dataKey={yKey}
+              name={yLabel}
               stroke="hsl(var(--muted-foreground))"
               tick={{ fontSize: 11 }}
-              label={{ value: "GDP ($B)", angle: -90, position: "insideLeft", fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+              tickFormatter={(v) => v.toLocaleString()}
+              label={{ value: yLabel, angle: -90, position: "insideLeft", fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+              width={90}
             />
-            <ZAxis type="number" dataKey="pop" range={[60, 600]} name="Population (M)" />
+            <ZAxis type="number" dataKey="revenue" range={[120, 1200]} name="Revenue" />
             <Tooltip
               cursor={{ stroke: "hsl(var(--neon-cyan))", strokeOpacity: 0.3 }}
-              contentStyle={{
-                background: "hsl(var(--popover))",
-                border: "1px solid hsl(var(--neon-cyan) / 0.4)",
-                borderRadius: 8,
-                fontSize: 12,
-              }}
-              formatter={(v: number, key: string) => [typeof v === "number" ? v.toLocaleString() : v, key]}
-              labelFormatter={() => ""}
               content={({ active, payload }) => {
                 if (!active || !payload?.length) return null;
                 const d: any = payload[0].payload;
                 return (
                   <div className="bg-popover border border-neon-cyan/40 rounded-lg p-3 text-xs">
-                    <div className="font-medium text-base text-neon-cyan">{d.country}</div>
+                    <div className="font-medium text-base text-neon-cyan">{d.region}</div>
                     <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 font-mono-num">
-                      <span className="text-muted-foreground">Energy</span><span>{d.energy.toLocaleString()} TWh</span>
-                      <span className="text-muted-foreground">GDP</span><span>${d.gdp.toLocaleString()}B</span>
-                      <span className="text-muted-foreground">Pop</span><span>{d.pop}M</span>
+                      {d.gdp > 0 && (<><span className="text-muted-foreground">GDP</span><span>${d.gdp.toLocaleString()}B</span></>)}
+                      <span className="text-muted-foreground">Production</span><span>{d.production.toLocaleString()}</span>
+                      <span className="text-muted-foreground">Revenue</span><span>{d.revenue.toLocaleString()}</span>
                     </div>
                   </div>
                 );
               }}
             />
-            <Scatter data={ENERGY_VS_GDP} fill="hsl(var(--neon-cyan))" fillOpacity={0.7} stroke="hsl(var(--neon-cyan))" />
-            <Scatter data={trend} line={{ stroke: "hsl(var(--neon-magenta))", strokeWidth: 2, strokeDasharray: "6 4" }} shape={() => <g />} legendType="none" />
-            <ReferenceLine />
+            <Scatter data={data} fill="hsl(var(--neon-cyan))" fillOpacity={0.7} stroke="hsl(var(--neon-magenta))" strokeWidth={1.5}>
+              <LabelList
+                dataKey="region"
+                position="top"
+                style={{ fill: "hsl(var(--foreground))", fontSize: 11, fontWeight: 600 }}
+              />
+            </Scatter>
           </ScatterChart>
         </ResponsiveContainer>
       </div>
 
       <InsightCard>
-        There is a strong correlation between energy production and economic strength — high-output economies cluster along the upper trendline.
+        Asia leads on both production and revenue every year, far outpacing other continents. Europe and North America cluster as the second tier, while Oceania and Africa anchor the lower end.
       </InsightCard>
     </Section>
   );

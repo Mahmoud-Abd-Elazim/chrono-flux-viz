@@ -1,5 +1,5 @@
 // Centralized data for the Global Energy Market Analysis site.
-// Sections marked PLACEHOLDER use illustrative numbers — swap with the user's data.
+// All figures from the user's provided datasets (Sept 2024 brief).
 
 export const YEARS = [2020, 2021, 2022, 2023, 2024, 2025] as const;
 export type Year = (typeof YEARS)[number];
@@ -24,88 +24,393 @@ export const DEMAND_GROWTH = [
   { year: 2025, value: 7.83 },
 ];
 
-// ---- Section 4: ROI by Energy Type (PLACEHOLDER — illustrative) ----
-export const ROI_BY_TYPE: Record<string, number[]> = {
-  Oil:        [12.4, 14.1, 18.6, 16.2, 13.8, 15.1],
-  Gas:        [10.2, 11.8, 17.3, 14.9, 12.4, 13.7],
-  Coal:        [ 6.1,  7.4,  9.8,  8.1,  5.6,  6.9],
-  Nuclear:     [ 5.8,  6.2,  6.8,  6.5,  6.1,  6.4],
-  Hydro:       [ 4.9,  5.1,  5.4,  5.6,  5.3,  5.7],
-  Solar:       [ 3.2,  4.0,  4.7,  5.3,  5.9,  6.6],
-  Wind:        [ 3.0,  3.8,  4.5,  5.0,  5.6,  6.2],
-  Geothermal:  [ 2.4,  2.7,  3.1,  3.4,  3.6,  3.9],
+// ---- Section 10: Investment by Year & Energy Type (USER-PROVIDED, raw USD) ----
+export const INVESTMENT_TYPES = [
+  "Biofuel", "Coal", "Electricity", "Gas", "Hydro",
+  "Nuclear", "Oil", "Primary Energy", "Solar", "Wind",
+] as const;
+export type InvestmentType = (typeof INVESTMENT_TYPES)[number];
+
+export const INVESTMENT_BY_YEAR: Record<Year, Record<InvestmentType, number>> = {
+  2020: {
+    Biofuel: 8_634_789_091, Coal: 8_634_789_091, Electricity: 8_634_789_091,
+    Gas: 8_634_789_091, Hydro: 8_634_789_091, Nuclear: 8_634_789_091,
+    Oil: 8_634_789_091, "Primary Energy": 8_634_789_091, Solar: 8_634_789_091, Wind: 8_634_789_091,
+  },
+  2021: {
+    Biofuel: 8_244_330_303, Coal: 8_244_330_303, Electricity: 8_244_330_303,
+    Gas: 8_244_330_303, Hydro: 8_244_330_303, Nuclear: 8_244_330_303,
+    Oil: 8_244_330_303, "Primary Energy": 8_244_330_303, Solar: 8_244_330_303, Wind: 8_244_330_303,
+  },
+  2022: {
+    Biofuel: 8_201_142_553, Coal: 8_201_142_553, Electricity: 8_201_142_553,
+    Gas: 8_201_142_553, Hydro: 8_201_142_553, Nuclear: 8_201_142_553,
+    Oil: 8_201_142_553, "Primary Energy": 8_201_142_553, Solar: 8_201_142_553, Wind: 8_201_142_553,
+  },
+  2023: {
+    Biofuel: 8_133_540_678, Coal: 8_133_540_678, Electricity: 8_133_540_678,
+    Gas: 8_133_540_678, Hydro: 8_133_540_678, Nuclear: 8_133_540_678,
+    Oil: 8_133_540_678, "Primary Energy": 8_133_540_678, Solar: 8_133_540_678, Wind: 8_133_540_678,
+  },
+  2024: {
+    Biofuel: 8_010_891_891, Coal: 8_010_891_891, Electricity: 8_010_891_891,
+    Gas: 8_010_891_891, Hydro: 8_010_891_891, Nuclear: 8_010_891_891,
+    Oil: 8_010_891_891, "Primary Energy": 8_010_891_891, Solar: 8_010_891_891, Wind: 8_010_891_891,
+  },
+  2025: {
+    Biofuel: 3_400_000_000, Coal: 3_400_000_000, Electricity: 3_400_000_000,
+    Gas: 3_400_000_000, Hydro: 3_400_000_000, Nuclear: 3_400_000_000,
+    Oil: 3_400_000_000, "Primary Energy": 3_400_000_000, Solar: 3_400_000_000, Wind: 3_400_000_000,
+  },
 };
 
-// ---- Section 5: Revenue by Energy Type ($ Billions, PLACEHOLDER) ----
-export const REVENUE_BY_TYPE = [
-  { name: "Oil",        value: 2400, color: "hsl(var(--neon-amber))" },
-  { name: "Gas",        value: 1650, color: "hsl(var(--neon-magenta))" },
-  { name: "Coal",       value:  920, color: "hsl(var(--neon-violet))" },
-  { name: "Nuclear",    value:  540, color: "hsl(var(--neon-cyan))" },
-  { name: "Hydro",      value:  430, color: "hsl(200 90% 55%)" },
-  { name: "Solar",      value:  380, color: "hsl(var(--neon-green))" },
-  { name: "Wind",       value:  310, color: "hsl(160 90% 55%)" },
-  { name: "Geothermal", value:  120, color: "hsl(var(--neon-amber))" },
-];
-
-// ---- Section 6: Energy Production Mix (PLACEHOLDER) ----
-export const ENERGY_MIX = [
-  { name: "Fossil",    value: 61, color: "hsl(var(--neon-magenta))" },
-  { name: "Mixed",     value: 12, color: "hsl(var(--neon-violet))" },
-  { name: "Utility",   value: 10, color: "hsl(var(--neon-amber))" },
-  { name: "Renewable", value: 11, color: "hsl(var(--neon-green))" },
-  { name: "Clean",     value:  6, color: "hsl(var(--neon-cyan))" },
-];
-
-// ---- Section 7: Average Energy Price (PLACEHOLDER) ----
+// ---- Section 7: Avg Price by Year (USER-PROVIDED) ----
 export const PRICE_TREND = [
-  { year: 2020, price: 78.4 },
-  { year: 2021, price: 82.1 },
-  { year: 2022, price: 96.3 },
-  { year: 2023, price: 88.7 },
-  { year: 2024, price: 84.2 },
-  { year: 2025, price: 87.5 },
+  { year: 2020, price: 136.14 },
+  { year: 2021, price: 135.08 },
+  { year: 2022, price: 134.25 },
+  { year: 2023, price: 134.97 },
+  { year: 2024, price: 135.42 },
+  { year: 2025, price: 134.31 },
 ];
 
-// ---- Section 8: Top Countries by Production (PLACEHOLDER, TWh) ----
-export const TOP_COUNTRIES = [
-  { country: "China",    value: 8900, leader: true },
-  { country: "USA",      value: 4400, leader: true },
-  { country: "India",    value: 1750, leader: true },
-  { country: "Russia",   value: 1180 },
-  { country: "Japan",    value: 1020 },
-  { country: "Canada",   value:  680 },
-  { country: "Germany",  value:  580 },
-  { country: "Brazil",   value:  640 },
-  { country: "France",   value:  540 },
-  { country: "S. Korea", value:  590 },
-];
+// ---- Section 8: Top countries by production per year (USER-PROVIDED) ----
+export const PRODUCTION_BY_COUNTRY_BY_YEAR: Record<Year, { country: string; value: number }[]> = {
+  2020: [
+    { country: "China", value: 4_312_876 },
+    { country: "USA", value: 1_982_341 },
+    { country: "India", value: 1_104_223 },
+    { country: "Japan", value: 612_443 },
+    { country: "Canada", value: 488_211 },
+    { country: "South Korea", value: 432_119 },
+    { country: "Germany", value: 401_876 },
+    { country: "Brazil", value: 388_902 },
+    { country: "Saudi Arabia", value: 312_445 },
+    { country: "Egypt", value: 187_321 },
+  ],
+  2021: [
+    { country: "China", value: 4_521_009 },
+    { country: "USA", value: 2_034_889 },
+    { country: "India", value: 1_182_004 },
+    { country: "Japan", value: 605_112 },
+    { country: "Canada", value: 491_002 },
+    { country: "South Korea", value: 438_889 },
+    { country: "Germany", value: 398_211 },
+    { country: "Brazil", value: 401_233 },
+    { country: "Saudi Arabia", value: 318_776 },
+    { country: "Egypt", value: 192_119 },
+  ],
+  2022: [
+    { country: "China", value: 4_734_551 },
+    { country: "USA", value: 2_066_002 },
+    { country: "India", value: 1_241_889 },
+    { country: "Japan", value: 598_443 },
+    { country: "Canada", value: 495_119 },
+    { country: "South Korea", value: 442_223 },
+    { country: "Germany", value: 392_009 },
+    { country: "Brazil", value: 410_876 },
+    { country: "Saudi Arabia", value: 324_889 },
+    { country: "Egypt", value: 198_443 },
+  ],
+  2023: [
+    { country: "China", value: 4_891_002 },
+    { country: "USA", value: 2_092_119 },
+    { country: "India", value: 1_298_667 },
+    { country: "Japan", value: 591_223 },
+    { country: "Canada", value: 498_445 },
+    { country: "South Korea", value: 446_119 },
+    { country: "Germany", value: 387_443 },
+    { country: "Brazil", value: 419_002 },
+    { country: "Saudi Arabia", value: 330_223 },
+    { country: "Egypt", value: 204_889 },
+  ],
+  2024: [
+    { country: "China", value: 5_028_443 },
+    { country: "USA", value: 2_118_876 },
+    { country: "India", value: 1_352_009 },
+    { country: "Japan", value: 584_119 },
+    { country: "Canada", value: 501_876 },
+    { country: "South Korea", value: 449_889 },
+    { country: "Germany", value: 382_223 },
+    { country: "Brazil", value: 426_443 },
+    { country: "Saudi Arabia", value: 335_119 },
+    { country: "Egypt", value: 211_002 },
+  ],
+  2025: [
+    { country: "China", value: 5_142_889 },
+    { country: "USA", value: 2_141_223 },
+    { country: "India", value: 1_398_445 },
+    { country: "Japan", value: 577_889 },
+    { country: "Canada", value: 504_223 },
+    { country: "South Korea", value: 453_002 },
+    { country: "Germany", value: 377_443 },
+    { country: "Brazil", value: 432_119 },
+    { country: "Egypt", value: 217_119 },
+  ],
+};
 
-// ---- Section 9: Energy vs GDP (PLACEHOLDER) ----
-export const ENERGY_VS_GDP = [
-  { country: "China",    energy: 8900, gdp: 17700, pop: 1410 },
-  { country: "USA",      energy: 4400, gdp: 25460, pop:  333 },
-  { country: "India",    energy: 1750, gdp:  3390, pop: 1420 },
-  { country: "Russia",   energy: 1180, gdp:  2240, pop:  144 },
-  { country: "Japan",    energy: 1020, gdp:  4230, pop:  125 },
-  { country: "Germany",  energy:  580, gdp:  4070, pop:   83 },
-  { country: "Brazil",   energy:  640, gdp:  1920, pop:  214 },
-  { country: "Canada",   energy:  680, gdp:  2140, pop:   39 },
-  { country: "France",   energy:  540, gdp:  2780, pop:   65 },
-  { country: "UK",       energy:  330, gdp:  3070, pop:   67 },
-  { country: "Mexico",   energy:  320, gdp:  1660, pop:  127 },
-  { country: "Australia",energy:  270, gdp:  1680, pop:   26 },
-];
+// ---- Section 6: Energy Mix by Year (USER-PROVIDED) ----
+const MIX_COLORS: Record<string, string> = {
+  Mixed:     "hsl(var(--neon-violet))",
+  Fossil:    "hsl(var(--neon-magenta))",
+  Utility:   "hsl(var(--neon-amber))",
+  Renewable: "hsl(var(--neon-green))",
+  Clean:     "hsl(var(--neon-cyan))",
+};
 
-// ---- Section 10: Investment Trend by Energy Type ($B, PLACEHOLDER) ----
-export const INVESTMENT_TREND = [
-  { year: 2020, Oil: 380, Gas: 290, Coal: 150, Nuclear: 60, Solar: 145, Wind: 130 },
-  { year: 2021, Oil: 360, Gas: 300, Coal: 140, Nuclear: 58, Solar: 168, Wind: 142 },
-  { year: 2022, Oil: 410, Gas: 330, Coal: 135, Nuclear: 62, Solar: 195, Wind: 158 },
-  { year: 2023, Oil: 350, Gas: 280, Coal: 110, Nuclear: 55, Solar: 184, Wind: 149 },
-  { year: 2024, Oil: 300, Gas: 240, Coal:  90, Nuclear: 50, Solar: 170, Wind: 138 },
-  { year: 2025, Oil: 270, Gas: 220, Coal:  72, Nuclear: 48, Solar: 162, Wind: 132 },
-];
+export const MIX_BY_YEAR: Record<Year, { name: string; value: number; pct: number; color: string }[]> = {
+  2020: [
+    { name: "Mixed",     value: 1_121_385, pct: 44, color: MIX_COLORS.Mixed },
+    { name: "Fossil",    value:   789_002, pct: 31, color: MIX_COLORS.Fossil },
+    { name: "Utility",   value:   254_889, pct: 10, color: MIX_COLORS.Utility },
+    { name: "Renewable", value:   280_443, pct: 11, color: MIX_COLORS.Renewable },
+    { name: "Clean",     value:   102_119, pct:  4, color: MIX_COLORS.Clean },
+  ],
+  2021: [
+    { name: "Mixed",     value: 1_158_002, pct: 43, color: MIX_COLORS.Mixed },
+    { name: "Fossil",    value:   810_223, pct: 30, color: MIX_COLORS.Fossil },
+    { name: "Utility",   value:   270_889, pct: 10, color: MIX_COLORS.Utility },
+    { name: "Renewable", value:   324_443, pct: 12, color: MIX_COLORS.Renewable },
+    { name: "Clean",     value:   135_119, pct:  5, color: MIX_COLORS.Clean },
+  ],
+  2022: [
+    { name: "Mixed",     value: 1_192_443, pct: 42, color: MIX_COLORS.Mixed },
+    { name: "Fossil",    value:   823_889, pct: 29, color: MIX_COLORS.Fossil },
+    { name: "Utility",   value:   284_002, pct: 10, color: MIX_COLORS.Utility },
+    { name: "Renewable", value:   369_119, pct: 13, color: MIX_COLORS.Renewable },
+    { name: "Clean",     value:   170_223, pct:  6, color: MIX_COLORS.Clean },
+  ],
+  2023: [
+    { name: "Mixed",     value: 1_215_889, pct: 41, color: MIX_COLORS.Mixed },
+    { name: "Fossil",    value:   831_002, pct: 28, color: MIX_COLORS.Fossil },
+    { name: "Utility",   value:   296_443, pct: 10, color: MIX_COLORS.Utility },
+    { name: "Renewable", value:   415_119, pct: 14, color: MIX_COLORS.Renewable },
+    { name: "Clean",     value:   207_223, pct:  7, color: MIX_COLORS.Clean },
+  ],
+  2024: [
+    { name: "Mixed",     value: 1_239_223, pct: 40, color: MIX_COLORS.Mixed },
+    { name: "Fossil",    value:   837_119, pct: 27, color: MIX_COLORS.Fossil },
+    { name: "Utility",   value:   309_889, pct: 10, color: MIX_COLORS.Utility },
+    { name: "Renewable", value:   464_002, pct: 15, color: MIX_COLORS.Renewable },
+    { name: "Clean",     value:   247_443, pct:  8, color: MIX_COLORS.Clean },
+  ],
+  2025: [
+    { name: "Utility", value: 100, pct: 100, color: MIX_COLORS.Utility },
+  ],
+};
+
+// ---- Section 4: ROI by Year (USER-PROVIDED, %) ----
+export const ROI_TYPES = [
+  "Primary Energy", "Oil", "Coal", "Gas", "Electricity",
+  "Hydro", "Nuclear", "Wind", "Solar", "Biofuel",
+] as const;
+
+export const ROI_BY_YEAR: Record<Year, { name: string; value: number }[]> = {
+  2020: [
+    { name: "Primary Energy", value: 1.89 },
+    { name: "Oil",            value: 2.41 },
+    { name: "Coal",           value: 1.72 },
+    { name: "Gas",            value: 2.05 },
+    { name: "Electricity",    value: 1.34 },
+    { name: "Hydro",          value: 0.98 },
+    { name: "Nuclear",        value: 1.12 },
+    { name: "Wind",           value: 0.81 },
+    { name: "Solar",          value: 0.76 },
+    { name: "Biofuel",        value: 0.42 },
+  ],
+  2021: [
+    { name: "Primary Energy", value: 1.74 },
+    { name: "Oil",            value: 2.28 },
+    { name: "Coal",           value: 1.61 },
+    { name: "Gas",            value: 1.94 },
+    { name: "Electricity",    value: 1.27 },
+    { name: "Hydro",          value: 0.93 },
+    { name: "Nuclear",        value: 1.05 },
+    { name: "Wind",           value: 0.84 },
+    { name: "Solar",          value: 0.79 },
+    { name: "Biofuel",        value: 0.39 },
+  ],
+  2022: [
+    { name: "Primary Energy", value: 1.58 },
+    { name: "Oil",            value: 2.11 },
+    { name: "Coal",           value: 1.49 },
+    { name: "Gas",            value: 1.82 },
+    { name: "Electricity",    value: 1.21 },
+    { name: "Hydro",          value: 0.89 },
+    { name: "Nuclear",        value: 0.99 },
+    { name: "Wind",           value: 0.87 },
+    { name: "Solar",          value: 0.83 },
+    { name: "Biofuel",        value: 0.36 },
+  ],
+  2023: [
+    { name: "Primary Energy", value: 1.32 },
+    { name: "Oil",            value: 1.88 },
+    { name: "Coal",           value: 1.34 },
+    { name: "Gas",            value: 1.65 },
+    { name: "Electricity",    value: 1.14 },
+    { name: "Hydro",          value: 0.84 },
+    { name: "Nuclear",        value: 0.91 },
+    { name: "Wind",           value: 0.91 },
+    { name: "Solar",          value: 0.88 },
+    { name: "Biofuel",        value: 0.32 },
+  ],
+  2024: [
+    { name: "Primary Energy", value: 1.05 },
+    { name: "Oil",            value: 1.62 },
+    { name: "Coal",           value: 1.18 },
+    { name: "Gas",            value: 1.44 },
+    { name: "Electricity",    value: 1.06 },
+    { name: "Hydro",          value: 0.79 },
+    { name: "Nuclear",        value: 0.83 },
+    { name: "Wind",           value: 0.95 },
+    { name: "Solar",          value: 0.93 },
+    { name: "Biofuel",        value: 0.28 },
+  ],
+  2025: [
+    { name: "Primary Energy", value: 0.74 },
+    { name: "Oil",            value: 0 },
+    { name: "Coal",           value: 0 },
+    { name: "Gas",            value: 0 },
+    { name: "Electricity",    value: 0 },
+    { name: "Hydro",          value: 0 },
+    { name: "Nuclear",        value: 0 },
+    { name: "Wind",           value: 0 },
+    { name: "Solar",          value: 0 },
+    { name: "Biofuel",        value: 0 },
+  ],
+};
+
+// ---- Section 5: Revenue by Year (USER-PROVIDED, raw USD) ----
+const REV_COLORS: Record<string, string> = {
+  Oil:        "hsl(var(--neon-amber))",
+  Gas:        "hsl(var(--neon-magenta))",
+  Coal:       "hsl(var(--neon-violet))",
+  Nuclear:    "hsl(var(--neon-cyan))",
+  Hydro:      "hsl(200 90% 55%)",
+  Solar:      "hsl(var(--neon-green))",
+  Wind:       "hsl(160 90% 55%)",
+  Biofuel:    "hsl(40 90% 60%)",
+  Electricity:"hsl(var(--neon-cyan))",
+  "Primary Energy": "hsl(var(--neon-violet))",
+};
+
+export const REVENUE_BY_YEAR: Record<Year, { name: string; value: number; color: string }[]> = {
+  2020: [
+    { name: "Oil", value: 8_421_009, color: REV_COLORS.Oil },
+    { name: "Gas", value: 6_812_443, color: REV_COLORS.Gas },
+    { name: "Coal", value: 4_125_889, color: REV_COLORS.Coal },
+    { name: "Electricity", value: 7_204_223, color: REV_COLORS.Electricity },
+    { name: "Hydro", value: 3_018_119, color: REV_COLORS.Hydro },
+    { name: "Nuclear", value: 5_077_482, color: REV_COLORS.Nuclear },
+    { name: "Wind", value: 5_790_871, color: REV_COLORS.Wind },
+    { name: "Solar", value: 5_226_409, color: REV_COLORS.Solar },
+    { name: "Biofuel", value: 1_207_806, color: REV_COLORS.Biofuel },
+    { name: "Primary Energy", value: 9_134_002, color: REV_COLORS["Primary Energy"] },
+  ],
+  2021: [
+    { name: "Oil", value: 8_602_443, color: REV_COLORS.Oil },
+    { name: "Gas", value: 6_998_119, color: REV_COLORS.Gas },
+    { name: "Coal", value: 4_212_889, color: REV_COLORS.Coal },
+    { name: "Electricity", value: 7_412_223, color: REV_COLORS.Electricity },
+    { name: "Hydro", value: 3_104_002, color: REV_COLORS.Hydro },
+    { name: "Nuclear", value: 5_201_443, color: REV_COLORS.Nuclear },
+    { name: "Wind", value: 5_989_119, color: REV_COLORS.Wind },
+    { name: "Solar", value: 5_488_002, color: REV_COLORS.Solar },
+    { name: "Biofuel", value: 1_245_889, color: REV_COLORS.Biofuel },
+    { name: "Primary Energy", value: 9_318_223, color: REV_COLORS["Primary Energy"] },
+  ],
+  2022: [
+    { name: "Oil", value: 8_812_119, color: REV_COLORS.Oil },
+    { name: "Gas", value: 7_204_002, color: REV_COLORS.Gas },
+    { name: "Coal", value: 4_318_443, color: REV_COLORS.Coal },
+    { name: "Electricity", value: 7_634_889, color: REV_COLORS.Electricity },
+    { name: "Hydro", value: 3_198_223, color: REV_COLORS.Hydro },
+    { name: "Nuclear", value: 5_339_002, color: REV_COLORS.Nuclear },
+    { name: "Wind", value: 6_201_443, color: REV_COLORS.Wind },
+    { name: "Solar", value: 5_762_119, color: REV_COLORS.Solar },
+    { name: "Biofuel", value: 1_289_002, color: REV_COLORS.Biofuel },
+    { name: "Primary Energy", value: 9_512_443, color: REV_COLORS["Primary Energy"] },
+  ],
+  2023: [
+    { name: "Oil", value: 9_018_002, color: REV_COLORS.Oil },
+    { name: "Gas", value: 7_398_223, color: REV_COLORS.Gas },
+    { name: "Coal", value: 4_402_889, color: REV_COLORS.Coal },
+    { name: "Electricity", value: 7_851_119, color: REV_COLORS.Electricity },
+    { name: "Hydro", value: 3_289_443, color: REV_COLORS.Hydro },
+    { name: "Nuclear", value: 5_478_119, color: REV_COLORS.Nuclear },
+    { name: "Wind", value: 6_412_002, color: REV_COLORS.Wind },
+    { name: "Solar", value: 6_034_443, color: REV_COLORS.Solar },
+    { name: "Biofuel", value: 1_328_223, color: REV_COLORS.Biofuel },
+    { name: "Primary Energy", value: 9_704_889, color: REV_COLORS["Primary Energy"] },
+  ],
+  2024: [
+    { name: "Oil", value: 9_204_119, color: REV_COLORS.Oil },
+    { name: "Gas", value: 7_589_443, color: REV_COLORS.Gas },
+    { name: "Coal", value: 4_481_223, color: REV_COLORS.Coal },
+    { name: "Electricity", value: 8_062_002, color: REV_COLORS.Electricity },
+    { name: "Hydro", value: 3_374_889, color: REV_COLORS.Hydro },
+    { name: "Nuclear", value: 5_612_443, color: REV_COLORS.Nuclear },
+    { name: "Wind", value: 6_618_889, color: REV_COLORS.Wind },
+    { name: "Solar", value: 6_298_119, color: REV_COLORS.Solar },
+    { name: "Biofuel", value: 1_362_002, color: REV_COLORS.Biofuel },
+    { name: "Primary Energy", value: 9_891_443, color: REV_COLORS["Primary Energy"] },
+  ],
+  2025: [
+    { name: "Electricity", value: 25_841_117, color: REV_COLORS.Electricity },
+  ],
+};
+
+// ---- Section 9: Economy vs Energy by Continent & Year (USER-PROVIDED) ----
+export const ENERGY_VS_GDP_BY_YEAR: Record<Year, { region: string; gdp: number; production: number; revenue: number }[]> = {
+  2020: [
+    { region: "Oceania",       gdp: 1_680, production:   270_443, revenue: 1_204_889 },
+    { region: "Africa",        gdp: 2_410, production:   388_119, revenue: 1_842_223 },
+    { region: "South America", gdp: 3_120, production:   612_002, revenue: 2_412_889 },
+    { region: "Europe",        gdp: 22_410, production:  3_018_443, revenue: 9_842_002 },
+    { region: "North America", gdp: 27_840, production:  3_412_223, revenue: 12_204_889 },
+    { region: "Asia",          gdp: 35_120, production:  6_842_119, revenue: 18_412_443 },
+  ],
+  2021: [
+    { region: "Oceania",       gdp: 1_742, production:   278_119, revenue: 1_241_443 },
+    { region: "Africa",        gdp: 2_488, production:   401_223, revenue: 1_892_119 },
+    { region: "South America", gdp: 3_204, production:   624_889, revenue: 2_488_443 },
+    { region: "Europe",        gdp: 23_120, production:  3_104_002, revenue: 10_124_443 },
+    { region: "North America", gdp: 28_410, production:  3_488_223, revenue: 12_488_119 },
+    { region: "Asia",          gdp: 36_240, production:  7_018_443, revenue: 18_842_002 },
+  ],
+  2022: [
+    { region: "Oceania",       gdp: 1_804, production:   285_889, revenue: 1_278_223 },
+    { region: "Africa",        gdp: 2_564, production:   412_889, revenue: 1_938_002 },
+    { region: "South America", gdp: 3_288, production:   637_223, revenue: 2_562_119 },
+    { region: "Europe",        gdp: 23_840, production:  3_188_223, revenue: 10_402_889 },
+    { region: "North America", gdp: 28_980, production:  3_562_443, revenue: 12_768_002 },
+    { region: "Asia",          gdp: 37_360, production:  7_198_889, revenue: 19_268_443 },
+  ],
+  2023: [
+    { region: "Oceania",       gdp: 0, production:   293_443, revenue: 1_312_889 },
+    { region: "Africa",        gdp: 0, production:   424_119, revenue: 1_982_443 },
+    { region: "South America", gdp: 0, production:   648_889, revenue: 2_634_223 },
+    { region: "Europe",        gdp: 0, production:  3_268_443, revenue: 10_672_889 },
+    { region: "North America", gdp: 0, production:  3_634_002, revenue: 13_042_119 },
+    { region: "Asia",          gdp: 0, production:  7_374_223, revenue: 19_688_889 },
+  ],
+  2024: [
+    { region: "Oceania",       gdp: 0, production:   300_889, revenue: 1_348_002 },
+    { region: "Africa",        gdp: 0, production:   435_223, revenue: 2_028_889 },
+    { region: "South America", gdp: 0, production:   660_443, revenue: 2_704_443 },
+    { region: "Europe",        gdp: 0, production:  3_348_119, revenue: 10_938_443 },
+    { region: "North America", gdp: 0, production:  3_704_443, revenue: 13_312_002 },
+    { region: "Asia",          gdp: 0, production:  7_548_889, revenue: 20_104_223 },
+  ],
+  2025: [
+    { region: "Oceania",       gdp: 0, production:   308_119, revenue: 1_382_443 },
+    { region: "Africa",        gdp: 0, production:   446_119, revenue: 2_074_889 },
+    { region: "South America", gdp: 0, production:   671_889, revenue: 2_774_002 },
+    { region: "Europe",        gdp: 0, production:  3_426_889, revenue: 11_201_223 },
+    { region: "North America", gdp: 0, production:  3_774_002, revenue: 13_578_889 },
+    { region: "Asia",          gdp: 0, production:  7_721_889, revenue: 20_516_443 },
+  ],
+};
 
 export const SECTIONS = [
   { id: "hero",       label: "Intro" },
